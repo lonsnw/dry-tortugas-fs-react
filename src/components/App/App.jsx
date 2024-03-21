@@ -3,7 +3,7 @@ import './App.css';
 // useState is a hook; we're importing the function that 
 // we're going to use to keep our variables and the content on our page in sync.
 import { useState } from 'react';
-
+import axios from 'axios'; 
 
 function App() {
   // JavaScript goes inside of the function created for the app
@@ -14,7 +14,9 @@ function App() {
 
   // new way to declare a variable is in an array
   const [counter, setCounter] = useState(100);
-
+  // we can put in test data when we're setting things up to see what's working
+  const [name, setName] = useState('');
+  const [continent, setContinent] = useState('');
   // functions go here
   const increase = () => {
     // counter += 1;
@@ -28,6 +30,23 @@ function App() {
   const decrease = () => {
     setCounter(counter - 1);
     console.log('decrease', counter);
+  }
+
+  // function called when we submit the form
+  const sendToServer = (e) => {
+    // prevent the page from refreshing
+    e.preventDefault();
+    console.log('name', name, 'continent', continent);
+    // TODO: Axios POST
+    const dataToSend = { name: name, continent: continent };
+    // again adding /api because we're using vite as a build tool
+    axios.post('/api/countries', dataToSend).then((response) => {
+      // TODO: Axios GET
+
+    }).catch((error) => {
+      console.error(error);
+      alert('Something went wrong!');
+    })
   }
 
   return (
@@ -46,6 +65,14 @@ function App() {
         <br />
         <button onClick={decrease}>Decrease</button>
       </div>
+      <h2>Add new country</h2>
+      <form onSubmit={sendToServer}>
+        {/*                         getter                         setter */}
+        Name: <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+        Continent: <input type="text" value={continent} onChange={(e) => setContinent(e.target.value)} />
+        <input type="submit" value="Submit" />
+      </form>
+      <h3>{name}, {continent}</h3>
     </div>
   );
 }
