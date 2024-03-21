@@ -96,8 +96,13 @@ function App() {
       {
         // Loops over the list of countries and displays them
         countryList.map((country) => {
-          return <div>{country.name}, {country.continent}</div>
+          return <div key={country.id}>{country.name}, {country.continent}</div>
         })
+          // you can omit the return and switch the curly brackets to parentheses
+          // shorthand notation: (
+          //   return <div key={country.id}>{country.name}, {country.continent}</div>
+          // ))
+          // there's no difference, but both will be used on stackoverflow and similar
       }
     </div>
   );
