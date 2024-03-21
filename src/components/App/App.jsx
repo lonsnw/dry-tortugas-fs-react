@@ -2,7 +2,7 @@
 import './App.css';
 // useState is a hook; we're importing the function that 
 // we're going to use to keep our variables and the content on our page in sync.
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios'; 
 
 function App() {
@@ -17,6 +17,10 @@ function App() {
   // we can put in test data when we're setting things up to see what's working
   const [name, setName] = useState('');
   const [continent, setContinent] = useState('');
+  
+  //Country list
+  const [countryList, setCountryList] = useState([]);
+
   // functions go here
   const increase = () => {
     // counter += 1;
@@ -32,6 +36,22 @@ function App() {
     console.log('decrease', counter);
   }
 
+  const getCountries = () => {
+    axios.get('/api/countries').then((response) => {
+      console.log('Data:', response.data);
+      setCountryList(response.data);
+    }).catch((error) => {
+    console.error(error);
+    alert('Something went wrong!')
+  });
+  }
+  // useEffect is called by react when the page loads
+  useEffect(() => {
+    getCountries();
+    // ", []" prevents us from triggering an infinite loop
+    // empty array means "run this on page reload"
+  }, []); 
+
   // function called when we submit the form
   const sendToServer = (e) => {
     // prevent the page from refreshing
@@ -41,8 +61,7 @@ function App() {
     const dataToSend = { name: name, continent: continent };
     // again adding /api because we're using vite as a build tool
     axios.post('/api/countries', dataToSend).then((response) => {
-      // TODO: Axios GET
-
+      getCountries();
     }).catch((error) => {
       console.error(error);
       alert('Something went wrong!');
@@ -72,7 +91,14 @@ function App() {
         Continent: <input type="text" value={continent} onChange={(e) => setContinent(e.target.value)} />
         <input type="submit" value="Submit" />
       </form>
-      <h3>{name}, {continent}</h3>
+      <h3>{name} {continent}</h3>
+      <h2>List of countries</h2>
+      {
+        // Loops over the list of countries and displays them
+        countryList.map((country) => {
+          return <div>{country.name}, {country.continent}</div>
+        })
+      }
     </div>
   );
 }
