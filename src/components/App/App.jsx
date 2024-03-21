@@ -62,6 +62,9 @@ function App() {
     // again adding /api because we're using vite as a build tool
     axios.post('/api/countries', dataToSend).then((response) => {
       getCountries();
+      // clear out the name after
+      setName('');
+      setContinent('');
     }).catch((error) => {
       console.error(error);
       alert('Something went wrong!');
@@ -93,6 +96,8 @@ function App() {
       </form>
       <h3>{name} {continent}</h3>
       <h2>List of countries</h2>
+      {/* This is helpful for development and debugging, but not for users */}
+      {JSON.stringify(countryList)}
       {
         // Loops over the list of countries and displays them
         countryList.map((country) => {
